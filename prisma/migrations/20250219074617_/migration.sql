@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "User" ALTER COLUMN "google" DROP NOT NULL,
+ALTER COLUMN "facebook" DROP NOT NULL;
