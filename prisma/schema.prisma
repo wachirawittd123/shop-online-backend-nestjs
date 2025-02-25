@@ -81,7 +81,7 @@ model Category {
   updatedOn      DateTime @updatedAt  // Automatically updates timestamp
   createdBy      String?  
   updatedBy      String?  
-  services       Service[] @relation("Category")
+  services       Service[] @relation("CategoryToService")
   createdByUser  User? @relation("CreatedCategories", fields: [createdBy], references: [id])
   updatedByUser  User? @relation("UpdatedCategories", fields: [updatedBy], references: [id])
 }
@@ -89,8 +89,8 @@ model Category {
 model Service {
   id                  String   @id @default(uuid())
   name                String
-  category            Category? @relation("Category", fields: [apiCategoriesId], references: [id]) // Use apiCategoriesId as foreign key
-  apiCategoriesId     String  @unique
+  apiCategoriesId     String   // Foreign Key to Category (ไม่ต้อง @unique)
+  category            Category? @relation("CategoryToService", fields: [apiCategoriesId], references: [id]) // One-to-Many
   price               Float?
   description         String?
   description_EN      String?
@@ -116,6 +116,24 @@ model Service {
   endpoints           Endpoint[] @relation("ServiceToEndpoint")
 }
 
+model Endpoint {
+  id               String   @id @default(uuid())
+  apiServiceId     String?
+  name             String
+  description      String?
+  requestUrl       String
+  isActive         Boolean? @default(true)
+  requestMethod    String?
+  creditPerRequest Float?
+  createdOn        DateTime?
+  updatedOn        DateTime?
+  createdBy        String?
+  updatedBy        String?
+  order            Int?
+  productName      String?
+  service          Service? @relation("ServiceToEndpoint", fields: [apiServiceId], references: [id])
+}
+
 model Pricing {
   id            String   @id @default(uuid())
   icPerPrice    Float
@@ -128,22 +146,4 @@ model Pricing {
   updatedBy     String?
   createdByUser  User? @relation("CreatedPricings", fields: [createdBy], references: [id])
   updatedByUser  User? @relation("UpdatedPricings", fields: [updatedBy], references: [id])
-}
-
-model Endpoint {
-  id               String   @id @default(uuid())
-  apiServiceId     String?
-  name             String
-  description      String?
-  requestUrl       String
-  isActive         Boolean?
-  requestMethod    String?
-  creditPerRequest Float?
-  createdOn        DateTime?
-  updatedOn        DateTime?
-  createdBy        String?
-  updatedBy        String?
-  order            Int?
-  productName      String?
-  service          Service? @relation("ServiceToEndpoint", fields: [apiServiceId], references: [id])
 }

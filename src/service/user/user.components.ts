@@ -17,7 +17,7 @@ export class UserComponents {
         let where: any = {}
         if (args.query && args.query?.toString().length > 0) {
             where = {
-                ...args.where,
+                ...where,
                 OR: [
                     { email: { contains: args.query, mode: "insensitive" } },
                     { name: { contains: args.query, mode: "insensitive" } },

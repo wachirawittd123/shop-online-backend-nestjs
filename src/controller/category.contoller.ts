@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Headers, Query, Param, Put, Res } from '@nestjs/common';
+import { Controller, Post, Body, Get, Headers, Query, Param, Put, Res, Delete } from '@nestjs/common';
 import { ICreateCategory, IQuerys, IUpdateCategory, IUserProfile } from 'src/interface';
 import { CategoryService } from 'src/service';
 import { CommonComponents } from 'src/service/common.components';
@@ -18,6 +18,16 @@ export class CategoryController {
         return CommonComponents.throwErrorResponse(error, res)
     }
   }
+  @Get('/table')
+  async getPageCategories(@Query() args: IQuerys, @Headers('authorization') authToken: string, @Res() res: Response): Promise<Response> {
+    try { 
+        await CommonComponents.verifyJWT({token: authToken, roles: ["superadmin", "admin", "consumer"]})
+        const result = await this.categoryService.getPageCategories(args);
+        return CommonComponents.throwResponse(result, "Query categories success", res)
+    } catch (error) {
+        return CommonComponents.throwErrorResponse(error, res)
+    }
+  }
   @Get('/:id')
     async categorie(@Param('id') id: string, @Headers('authorization') authToken: string, @Res() res: Response): Promise<Response> {
     try { 
@@ -31,7 +41,7 @@ export class CategoryController {
   @Post('/')
   async createCategory(@Body() args: ICreateCategory, @Headers('authorization') authToken: string, @Res() res: Response): Promise<Response> {
     try { 
-        const user: IUserProfile | any = await CommonComponents.verifyJWT({token: authToken, roles: ["superadmin", "admin", "consumer"]})
+        const user: IUserProfile | any = await CommonComponents.verifyJWT({token: authToken, roles: ["superadmin", "admin"]})
         const result = await this.categoryService.createCategory(args, user);
         return CommonComponents.throwResponse(result, "Create category success", res)
     } catch (error) {
@@ -41,12 +51,21 @@ export class CategoryController {
   @Put('/:id')
   async updateCategory(@Param('id') id: string, @Body() args: IUpdateCategory, @Headers('authorization') authToken: string, @Res() res: Response): Promise<Response> {
     try { 
-        const user: IUserProfile | any = await CommonComponents.verifyJWT({token: authToken, roles: ["superadmin", "admin", "consumer"]})
+        const user: IUserProfile | any = await CommonComponents.verifyJWT({token: authToken, roles: ["superadmin", "admin"]})
         const result = await this.categoryService.updateCategory({...args, id: id}, user);
         return CommonComponents.throwResponse(result, "Update category success", res)
     } catch (error) {
         return CommonComponents.throwErrorResponse(error, res)
     }
   }
-
+  @Delete('/:id')
+  async deleteCategory(@Param('id') id: string, @Headers('authorization') authToken: string, @Res() res: Response): Promise<Response> {
+    try { 
+        await CommonComponents.verifyJWT({token: authToken, roles: ["superadmin", "admin"]})
+        const result = await this.categoryService.deleteCategory({id});
+        return CommonComponents.throwResponse(result, "Delete category success", res)
+    } catch (error) {
+        return CommonComponents.throwErrorResponse(error, res)
+    }
+  }
 }

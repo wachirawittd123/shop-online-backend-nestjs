@@ -9,7 +9,7 @@ export class ServiceComponents {
         let where: any = {}
         if (args.query && args.query?.toString().length > 0) {
             where = {
-                ...args.where,
+                ...where,
                 OR: [
                     { name: { contains: args.query, mode: "insensitive" } },
                     { description: { contains: args.query, mode: "insensitive" } },

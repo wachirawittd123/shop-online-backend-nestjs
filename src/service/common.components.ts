@@ -25,7 +25,7 @@ export class CommonComponents {
     }
     static async verifyJWT({token, roles = ["consumer"]}: IVerifyJWT): Promise<object | string> {
         let newToken: string = String(token).replaceAll("Bearer ", "")
-        if(!newToken) throw new CustomError("Token is required", 400)
+        if(!newToken || newToken === "undefined") throw new CustomError("Token is required", 400)
         const profile: IUserProfile | any = jwt.verify(newToken, SettingService.JWT_SECRET)
         if(!profile) throw new CustomError("Invalid token", 400)
         let user: IUser | any = await prisma.user.findFirst({where: {id: profile.id}})

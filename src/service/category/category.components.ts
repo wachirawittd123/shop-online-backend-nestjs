@@ -9,7 +9,7 @@ export class CategoryComponents {
         let where: any = {}
         if (args.query && args.query?.toString().length > 0) {
             where = {
-                ...args.where,
+                ...where,
                 OR: [
                     { categoriesName: { contains: args.query, mode: "insensitive" } },
                 ],

@@ -1,3 +1,5 @@
+import { IService } from "./service.interface";
+
 export interface ICategory {
   id: string;
   categoriesName: string;
@@ -5,6 +7,7 @@ export interface ICategory {
   updatedOn: Date;
   createdBy: string;
   updatedBy: string;
+  services: IService[];
 }
 
 export interface IGetCategory {
@@ -12,6 +15,10 @@ export interface IGetCategory {
   categoriesName?: string;
 }
 
+export interface IGetPageCategories {
+  total: number;
+  results: ICategory[];
+}
 
 export interface ICreateCategory {
   categoriesName: string;

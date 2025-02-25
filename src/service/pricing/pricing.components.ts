@@ -8,13 +8,15 @@ export class PricingComponents {
     static genPricingQuery(args: IQuerys): IQuerys| any {
         let where: any = {}
         if (args.query && args.query?.toString().length > 0) {
+            const numericQuery = Number(args.query);
             where = {
-                ...args.where,
-                OR: [
-                    { price: { contains: args.query, mode: "insensitive" } },
-                    { icPerPrice: { contains: args.query, mode: "insensitive" } },
-                    { validatePeriod: { contains: args.query, mode: "insensitive" } },
-                ],
+                ...where,
+                OR: !isNaN(numericQuery) ? [
+                    { price: { equals: numericQuery } },
+                    { icPerPrice: { equals: numericQuery } },
+                    { validatePeriod: { equals: numericQuery } },
+                ].filter(condition => Object.keys(condition).length > 0)
+                : []
             }
         }
         return where

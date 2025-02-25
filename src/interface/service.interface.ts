@@ -1,4 +1,5 @@
 import { ICategory } from "./category.interface";
+import { IEndpoint } from "./endpoint.interface";
 
 export interface IService {
     id: string
@@ -25,6 +26,7 @@ export interface IService {
     docsUrl?: string;
     isFeaturedProducts?: boolean;
     icon?: string;
+    endpoints?: IEndpoint[];
 }
 
 export interface IGetService {

@@ -1,7 +1,7 @@
 
 export interface IQuerys {
     query?: string
-    where?: object
+    where?: object | any
     sort?: string
     skip?: number
     limit: number
