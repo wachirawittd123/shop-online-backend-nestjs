@@ -27,11 +27,11 @@
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
 ## Project setup
-
+  Node: 20
   1. Clone the repository
-2. Install the dependencies
-3. Create a .env file in the root directory
-4. Run the project
+  2. Install the dependencies
+  3. Create a .env file in the root directory
+  4. Run the project
 
 ```bash
 $ npm install
@@ -53,7 +53,7 @@ $ npm run start:prod
 $ npm run dev:prisma:migrate
 $ npm run prod:prisma:migrate
 
-# run test
+# run unit test
 $ npm run test
 ```
 
