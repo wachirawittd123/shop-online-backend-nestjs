@@ -35,9 +35,12 @@ let AuthService = class AuthService {
         const profile = await user_components_1.UserComponents.getProfile(this.prisma, { email: user.email });
         return {
             ...profile,
-            token: common_components_1.CommonComponents.signToken(profile),
+            token: await common_components_1.CommonComponents.signToken(profile),
             rtoken: await common_components_1.CommonComponents.refreshToken({ ...profile, password: user.password }),
         };
+    }
+    async logout(user) {
+        return await this.prisma.user.update({ where: { id: user.id }, data: { token: null, rtoken: null } });
     }
 };
 exports.AuthService = AuthService;

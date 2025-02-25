@@ -16,6 +16,7 @@ exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
 const auth_service_1 = require("../service/auth/auth.service");
 const local_auth_1 = require("../service/auth/guard/local-auth");
+const common_components_1 = require("../service/common.components");
 let AuthController = class AuthController {
     authService;
     constructor(authService) {
@@ -23,8 +24,19 @@ let AuthController = class AuthController {
     }
     async login(req) {
         try {
+            console.log("user=========>", req.user);
             const result = await this.authService.login(req.user);
             return { message: "Login success", data: result, status_code: 200 };
+        }
+        catch (error) {
+            return { message: error?.message, status_code: error?.statusCode || 400 };
+        }
+    }
+    async logout(authToken) {
+        try {
+            const user = await common_components_1.CommonComponents.verifyJWT({ token: authToken, roles: ["superadmin", "admin", "consumer"] });
+            await this.authService.logout(user);
+            return { message: "Logout success", data: {}, status_code: 200 };
         }
         catch (error) {
             return { message: error?.message, status_code: error?.statusCode || 400 };
@@ -40,6 +52,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
+__decorate([
+    (0, common_1.Post)('/logout'),
+    __param(0, (0, common_1.Headers)('authorization')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "logout", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])

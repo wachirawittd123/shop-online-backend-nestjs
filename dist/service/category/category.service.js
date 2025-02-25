@@ -13,6 +13,7 @@ exports.CategoryService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../../common/prisma.service");
 const category_components_1 = require("./category.components");
+const common_components_1 = require("../common.components");
 let CategoryService = class CategoryService {
     prisma;
     constructor(prisma) {
@@ -28,22 +29,22 @@ let CategoryService = class CategoryService {
     async createCategory(args, user) {
         const categoryName = await category_components_1.CategoryComponents.findCategory(this.prisma, { categoriesName: args.categoriesName });
         if (categoryName)
-            throw new Error("Category name already exists");
+            throw new common_components_1.CustomError("Category name already exists", 400);
         return await this.prisma.category.create({ data: { ...args, createdBy: user.id, updatedBy: user.id } });
     }
     async updateCategory(args, user) {
         const category = await this.getCategory({ id: args.id });
         if (!category)
-            throw new Error("Category not found");
+            throw new common_components_1.CustomError("Category not found", 400);
         const categoryName = await category_components_1.CategoryComponents.findCategory(this.prisma, { categoriesName: args.categoriesName, id: { not: args.id } });
         if (categoryName)
-            throw new Error("Category name already exists");
+            throw new common_components_1.CustomError("Category name already exists", 400);
         return await this.prisma.category.update({ where: { id: args.id }, data: { ...args, updatedBy: user.id } });
     }
     async deleteCategory(args) {
         const category = await this.getCategory({ id: args.id });
         if (!category)
-            throw new Error("Category not found");
+            throw new common_components_1.CustomError("Category not found", 400);
         return await this.prisma.category.delete({ where: { id: args.id } });
     }
 };

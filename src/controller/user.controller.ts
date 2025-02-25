@@ -10,7 +10,7 @@ export class UserController {
   @Get('/')
   async getUsers(@Query() args: IQuerys, @Headers('authorization') authToken: string): Promise<IResultController> {
     try {
-      CommonComponents.verifyJWT({token: authToken, roles: ["superadmin", "admin"]})
+      await CommonComponents.verifyJWT({token: authToken, roles: ["superadmin", "admin"]})
       const result = await this.userService.getUsers(args);
       return { message: "Get users success", data: result, status_code: 200 };
     } catch (error) {

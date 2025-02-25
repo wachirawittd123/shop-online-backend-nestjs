@@ -22,16 +22,21 @@ export class CommonComponents {
     static async comparePassword(password: string, hashedPassword: string): Promise<boolean> {
         return await bcrypt.compare(password, hashedPassword)
     }
-    static verifyJWT({token, roles = ["consumer"]}: IVerifyJWT): object | string {
+    static async verifyJWT({token, roles = ["consumer"]}: IVerifyJWT): Promise<object | string> {
         if(!token) throw new CustomError("Token is required", 400)
         const profile: IUserProfile | any = jwt.verify(String(token).replace("Bearer ", ""), SettingService.JWT_SECRET)
         if(!profile) throw new CustomError("Invalid token", 400)
-        if(roles && !roles.includes(profile.role)) throw new CustomError("You are not authorized to access this resource", 400)
+        let user = await prisma.user.findFirst({where: {id: profile.id}})
+        if(!user) throw new CustomError("User not found", 400)
+        if(user.token !== token) throw new CustomError("Token is expired", 400)
+        if(roles && !roles.includes(user.role)) throw new CustomError("You are not authorized to access this resource", 400)
         return profile
     }
-    static signToken(data: IUserProfile, remember?: boolean): string {
-        const expiresIn = remember ? '7d' : '1d'; // Set expiration to 1 day
-        return jwt.sign(data, SettingService.JWT_SECRET, { expiresIn })
+    static async signToken(data: IUserProfile, remember?: boolean): Promise<string> {
+        const expiresIn = remember ? '7d' : '3d'; // Set expiration to 3 day
+        let token: string = jwt.sign(data, SettingService.JWT_SECRET, { expiresIn })
+        await prisma.user.update({where: {id: data.id}, data: {token: token}})
+        return token
     }
     static async refreshToken(data: IUser): Promise<string> {
         try {

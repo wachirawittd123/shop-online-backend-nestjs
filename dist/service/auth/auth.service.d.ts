@@ -1,6 +1,7 @@
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import { PrismaService } from 'src/common/prisma.service';
+import { IUserProfile } from 'src/interface';
 export declare class AuthService {
     private jwtService;
     private userService;
@@ -8,4 +9,47 @@ export declare class AuthService {
     constructor(jwtService: JwtService, userService: UserService, prisma: PrismaService);
     validateUser(email: string, password: string): Promise<any>;
     login(user: any): Promise<any>;
+    logout(user: IUserProfile): Promise<{
+        id: string;
+        email: string;
+        password: string;
+        phone: string | null;
+        name: string;
+        picture: string | null;
+        role: string;
+        verifyId: string | null;
+        notification: boolean;
+        allNotification: boolean;
+        method: string | null;
+        status: string;
+        google: import("@prisma/client/runtime/library").JsonValue | null;
+        facebook: import("@prisma/client/runtime/library").JsonValue | null;
+        provider: string;
+        creditBalance: number;
+        creditPeriod: Date | null;
+        consumersId: string | null;
+        salt: string | null;
+        token: string | null;
+        rtoken: string | null;
+        ftoken: string | null;
+        gtoken: string | null;
+        pwExpiredOn: Date | null;
+        createdBy: string | null;
+        updatedBy: string | null;
+        createdOn: Date;
+        updatedOn: Date;
+        taxName: string | null;
+        taxNo: string | null;
+        taxAddress: string | null;
+        profileImage: string | null;
+        faceCompanyName: string | null;
+        faceCompanyPassword: string | null;
+        profile: import("@prisma/client/runtime/library").JsonValue | null;
+        signtoken: import("@prisma/client/runtime/library").JsonValue | null;
+        credit: import("@prisma/client/runtime/library").JsonValue | null;
+        subscription: boolean;
+        type: string | null;
+        originCreditBalance: number | null;
+        createdAt: Date;
+    }>;
 }

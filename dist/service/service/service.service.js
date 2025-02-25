@@ -14,6 +14,7 @@ const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../../common/prisma.service");
 const service_components_1 = require("./service.components");
 const category_components_1 = require("../category/category.components");
+const common_components_1 = require("../common.components");
 let ServiceCategoryService = class ServiceCategoryService {
     prisma;
     constructor(prisma) {
@@ -29,22 +30,22 @@ let ServiceCategoryService = class ServiceCategoryService {
     async createService(args, user) {
         const category = await category_components_1.CategoryComponents.findCategory(this.prisma, { id: args.apiCategoriesId });
         if (!category)
-            throw new Error("Category not found");
+            throw new common_components_1.CustomError("Category not found", 400);
         return await this.prisma.service.create({ data: { ...args, createdBy: user.id, updatedBy: user.id } });
     }
     async updateService(args, user) {
         const service = await this.getService({ id: args.id });
         if (!service)
-            throw new Error("Service not found");
+            throw new common_components_1.CustomError("Service not found", 400);
         const category = await category_components_1.CategoryComponents.findCategory(this.prisma, { id: args.apiCategoriesId });
         if (!category)
-            throw new Error("Category not found");
+            throw new common_components_1.CustomError("Category not found", 400);
         return await this.prisma.service.update({ where: { id: args.id }, data: { ...args, updatedBy: user.id } });
     }
     async deleteService(args) {
         const service = await this.getService({ id: args.id });
         if (!service)
-            throw new Error("Service not found");
+            throw new common_components_1.CustomError("Service not found", 400);
         return await this.prisma.service.delete({ where: { id: args.id } });
     }
 };

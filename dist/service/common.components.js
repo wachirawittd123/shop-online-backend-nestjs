@@ -27,19 +27,26 @@ let CommonComponents = class CommonComponents {
     static async comparePassword(password, hashedPassword) {
         return await bcrypt.compare(password, hashedPassword);
     }
-    static verifyJWT({ token, roles = ["consumer"] }) {
+    static async verifyJWT({ token, roles = ["consumer"] }) {
         if (!token)
             throw new CustomError("Token is required", 400);
         const profile = jwt.verify(String(token).replace("Bearer ", ""), setting_1.SettingService.JWT_SECRET);
         if (!profile)
             throw new CustomError("Invalid token", 400);
-        if (roles && !roles.includes(profile.role))
+        let user = await prisma.user.findFirst({ where: { id: profile.id } });
+        if (!user)
+            throw new CustomError("User not found", 400);
+        if (user.token !== token)
+            throw new CustomError("Token is expired", 400);
+        if (roles && !roles.includes(user.role))
             throw new CustomError("You are not authorized to access this resource", 400);
         return profile;
     }
-    static signToken(data, remember) {
-        const expiresIn = remember ? '7d' : '1d';
-        return jwt.sign(data, setting_1.SettingService.JWT_SECRET, { expiresIn });
+    static async signToken(data, remember) {
+        const expiresIn = remember ? '7d' : '3d';
+        let token = jwt.sign(data, setting_1.SettingService.JWT_SECRET, { expiresIn });
+        await prisma.user.update({ where: { id: data.id }, data: { token: token } });
+        return token;
     }
     static async refreshToken(data) {
         try {

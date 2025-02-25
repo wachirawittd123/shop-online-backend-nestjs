@@ -20,8 +20,12 @@ export class AuthService {
     const profile: IUserProfile | any = await UserComponents.getProfile(this.prisma, { email: user.email })
     return { 
         ...profile,
-        token: CommonComponents.signToken(profile),
+        token: await CommonComponents.signToken(profile),
         rtoken: await CommonComponents.refreshToken({...profile, password: user.password}),
      };
+  }
+
+  async logout(user: IUserProfile) {
+    return await this.prisma.user.update({where: {id: user.id}, data: {token: null, rtoken: null}});
   }
 }

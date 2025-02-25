@@ -23,7 +23,7 @@ let UserController = class UserController {
     }
     async getUsers(args, authToken) {
         try {
-            common_components_1.CommonComponents.verifyJWT({ token: authToken, roles: ["superadmin", "admin"] });
+            await common_components_1.CommonComponents.verifyJWT({ token: authToken, roles: ["superadmin", "admin"] });
             const result = await this.userService.getUsers(args);
             return { message: "Get users success", data: result, status_code: 200 };
         }

@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../common/prisma.service';
 import { ICategory, ICreateCategory, IGetCategory, IQuerys, IUpdateCategory, IUserProfile } from 'src/interface';
 import { CategoryComponents } from './category.components';
+import { CustomError } from '../common.components';
 
 @Injectable()
 export class CategoryService {
@@ -17,19 +18,19 @@ export class CategoryService {
   }
   async createCategory(args: ICreateCategory, user: IUserProfile): Promise<ICategory | any> {
     const categoryName = await CategoryComponents.findCategory(this.prisma, {categoriesName: args.categoriesName});
-    if(categoryName) throw new Error("Category name already exists");
+    if(categoryName) throw new CustomError("Category name already exists", 400);
     return await this.prisma.category.create({data: {...args, createdBy: user.id, updatedBy: user.id}});
   }
   async updateCategory(args: IUpdateCategory, user: IUserProfile): Promise<ICategory | any> {
     const category = await this.getCategory({id: args.id});
-    if(!category) throw new Error("Category not found");
+    if(!category) throw new CustomError("Category not found", 400);
     const categoryName = await CategoryComponents.findCategory(this.prisma, {categoriesName: args.categoriesName, id: {not: args.id}});
-    if(categoryName) throw new Error("Category name already exists");
+    if(categoryName) throw new CustomError("Category name already exists", 400);
     return await this.prisma.category.update({where: {id: args.id}, data: {...args, updatedBy: user.id}});
   }
   async deleteCategory(args: IGetCategory): Promise<ICategory | any> {
     const category = await this.getCategory({id: args.id});
-    if(!category) throw new Error("Category not found");
+    if(!category) throw new CustomError("Category not found", 400);
     return await this.prisma.category.delete({where: {id: args.id}});
   }
 }

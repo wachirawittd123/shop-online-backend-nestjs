@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../common/prisma.service';
 import { ICreatePricing, IGetPricing, IPricing, IQuerys, IUpdatePricing, IUserProfile } from 'src/interface';
 import { PricingComponents } from './pricing.components';
+import { CustomError } from '../common.components';
 
 @Injectable()
 export class PricingService {
@@ -20,12 +21,12 @@ export class PricingService {
   }
   async updatePricing(args: IUpdatePricing, user: IUserProfile): Promise<IPricing | any> {
     const pricing = await PricingComponents.findPricing(this.prisma, {id: args.id});
-    if(!pricing) throw new Error("Pricing not found");
+    if(!pricing) throw new CustomError("Pricing not found", 400);
     return await this.prisma.pricing.update({where: {id: args.id}, data: {...args, updatedBy: user.id}});
   }
   async deletePricing(args: IGetPricing): Promise<IPricing | any> {
     const pricing = await PricingComponents.findPricing(this.prisma, {id: args.id});
-    if(!pricing) throw new Error("Pricing not found");
+    if(!pricing) throw new CustomError("Pricing not found", 400);
     return await this.prisma.pricing.delete({where: {id: args.id}});
   }
 }
