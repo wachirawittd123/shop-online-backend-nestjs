@@ -22,24 +22,23 @@ let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
     }
-    async login(req) {
+    async login(req, res) {
         try {
-            console.log("user=========>", req.user);
             const result = await this.authService.login(req.user);
-            return { message: "Login success", data: result, status_code: 200 };
+            return common_components_1.CommonComponents.throwResponse(result, "Login success", res);
         }
         catch (error) {
-            return { message: error?.message, status_code: error?.statusCode || 400 };
+            return common_components_1.CommonComponents.throwErrorResponse(error, res);
         }
     }
-    async logout(authToken) {
+    async logout(authToken, res) {
         try {
             const user = await common_components_1.CommonComponents.verifyJWT({ token: authToken, roles: ["superadmin", "admin", "consumer"] });
             await this.authService.logout(user);
-            return { message: "Logout success", data: {}, status_code: 200 };
+            return common_components_1.CommonComponents.throwResponse({}, "Logout success", res);
         }
         catch (error) {
-            return { message: error?.message, status_code: error?.statusCode || 400 };
+            return common_components_1.CommonComponents.throwErrorResponse(error, res);
         }
     }
 };
@@ -48,15 +47,17 @@ __decorate([
     (0, common_1.UseGuards)(local_auth_1.LocalAuthGuard),
     (0, common_1.Post)('/login'),
     __param(0, (0, common_1.Request)()),
+    __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
 __decorate([
     (0, common_1.Post)('/logout'),
     __param(0, (0, common_1.Headers)('authorization')),
+    __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "logout", null);
 exports.AuthController = AuthController = __decorate([

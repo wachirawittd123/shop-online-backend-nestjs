@@ -33,10 +33,12 @@ let AuthService = class AuthService {
     }
     async login(user) {
         const profile = await user_components_1.UserComponents.getProfile(this.prisma, { email: user.email });
+        let token = await common_components_1.CommonComponents.signToken(profile);
+        let rtoken = await common_components_1.CommonComponents.refreshToken({ ...profile, password: user.password });
         return {
             ...profile,
-            token: await common_components_1.CommonComponents.signToken(profile),
-            rtoken: await common_components_1.CommonComponents.refreshToken({ ...profile, password: user.password }),
+            token: token,
+            rtoken: rtoken,
         };
     }
     async logout(user) {

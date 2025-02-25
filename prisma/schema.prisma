@@ -59,7 +59,6 @@ model User {
   updatedPricings     Pricing[]  @relation("UpdatedPricings")
 }
 
-
 model UserVerify {
   id     String   @id @default(uuid())
   status Boolean @default(false)
@@ -112,8 +111,9 @@ model Service {
   docsUrl             String?
   isFeaturedProducts  Boolean? @default(false)
   icon                String?
-  createdByUser  User? @relation("CreatedServices", fields: [createdBy], references: [id])
-  updatedByUser  User? @relation("UpdatedServices", fields: [updatedBy], references: [id])
+  createdByUser       User? @relation("CreatedServices", fields: [createdBy], references: [id])
+  updatedByUser       User? @relation("UpdatedServices", fields: [updatedBy], references: [id])
+  endpoints           Endpoint[] @relation("ServiceToEndpoint")
 }
 
 model Pricing {
@@ -128,4 +128,22 @@ model Pricing {
   updatedBy     String?
   createdByUser  User? @relation("CreatedPricings", fields: [createdBy], references: [id])
   updatedByUser  User? @relation("UpdatedPricings", fields: [updatedBy], references: [id])
+}
+
+model Endpoint {
+  id               String   @id @default(uuid())
+  apiServiceId     String?
+  name             String
+  description      String?
+  requestUrl       String
+  isActive         Boolean?
+  requestMethod    String?
+  creditPerRequest Float?
+  createdOn        DateTime?
+  updatedOn        DateTime?
+  createdBy        String?
+  updatedBy        String?
+  order            Int?
+  productName      String?
+  service          Service? @relation("ServiceToEndpoint", fields: [apiServiceId], references: [id])
 }

@@ -28,15 +28,16 @@ let CommonComponents = class CommonComponents {
         return await bcrypt.compare(password, hashedPassword);
     }
     static async verifyJWT({ token, roles = ["consumer"] }) {
-        if (!token)
+        let newToken = String(token).replaceAll("Bearer ", "");
+        if (!newToken)
             throw new CustomError("Token is required", 400);
-        const profile = jwt.verify(String(token).replace("Bearer ", ""), setting_1.SettingService.JWT_SECRET);
+        const profile = jwt.verify(newToken, setting_1.SettingService.JWT_SECRET);
         if (!profile)
             throw new CustomError("Invalid token", 400);
         let user = await prisma.user.findFirst({ where: { id: profile.id } });
         if (!user)
             throw new CustomError("User not found", 400);
-        if (user.token !== token)
+        if (user.token !== newToken)
             throw new CustomError("Token is expired", 400);
         if (roles && !roles.includes(user.role))
             throw new CustomError("You are not authorized to access this resource", 400);
@@ -75,6 +76,13 @@ let CommonComponents = class CommonComponents {
             console.error("Error generating refresh token:", error);
             throw new CustomError("Failed to generate refresh token", 400);
         }
+    }
+    static async throwErrorResponse(error, res) {
+        let statusCode = error?.statusCode || 400;
+        return res.status(statusCode).json({ message: error?.message, status_code: statusCode });
+    }
+    static async throwResponse(data, message, res) {
+        return res.status(200).json({ message: message, data: data, status_code: 200 });
     }
 };
 exports.CommonComponents = CommonComponents;

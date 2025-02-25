@@ -21,54 +21,54 @@ let PricingController = class PricingController {
     constructor(pricingService) {
         this.pricingService = pricingService;
     }
-    async pricings(args, authToken) {
+    async pricings(args, authToken, res) {
         try {
             await common_components_1.CommonComponents.verifyJWT({ token: authToken, roles: ["superadmin", "admin", "consumer"] });
             const result = await this.pricingService.getPricings(args);
-            return { message: "Query services success", data: result, status_code: 200 };
+            return common_components_1.CommonComponents.throwResponse(result, "Query services success", res);
         }
         catch (error) {
-            return { message: error?.message, status_code: error?.statusCode || 400 };
+            return common_components_1.CommonComponents.throwErrorResponse(error, res);
         }
     }
-    async pricing(id, authToken) {
+    async pricing(id, authToken, res) {
         try {
             await common_components_1.CommonComponents.verifyJWT({ token: authToken, roles: ["superadmin", "admin", "consumer"] });
             const result = await this.pricingService.getPricing({ id });
-            return { message: "Query service success", data: result, status_code: 200 };
+            return common_components_1.CommonComponents.throwResponse(result, "Query service success", res);
         }
         catch (error) {
-            return { message: error?.message, status_code: error?.statusCode || 400 };
+            return common_components_1.CommonComponents.throwErrorResponse(error, res);
         }
     }
-    async createPricing(args, authToken) {
+    async createPricing(args, authToken, res) {
         try {
             const user = await common_components_1.CommonComponents.verifyJWT({ token: authToken, roles: ["superadmin", "admin"] });
             const result = await this.pricingService.createPricing(args, user);
-            return { message: "Create pricing success", data: result, status_code: 200 };
+            return common_components_1.CommonComponents.throwResponse(result, "Create pricing success", res);
         }
         catch (error) {
-            return { message: error?.message, status_code: error?.statusCode || 400 };
+            return common_components_1.CommonComponents.throwErrorResponse(error, res);
         }
     }
-    async updatePricing(id, args, authToken) {
+    async updatePricing(id, args, authToken, res) {
         try {
             const user = await common_components_1.CommonComponents.verifyJWT({ token: authToken, roles: ["superadmin", "admin"] });
             const result = await this.pricingService.updatePricing({ ...args, id: id }, user);
-            return { message: "Update pricing success", data: result, status_code: 200 };
+            return common_components_1.CommonComponents.throwResponse(result, "Update pricing success", res);
         }
         catch (error) {
-            return { message: error?.message, status_code: error?.statusCode || 400 };
+            return common_components_1.CommonComponents.throwErrorResponse(error, res);
         }
     }
-    async deletePricing(id, authToken) {
+    async deletePricing(id, authToken, res) {
         try {
             await common_components_1.CommonComponents.verifyJWT({ token: authToken, roles: ["superadmin", "admin"] });
             const result = await this.pricingService.deletePricing({ id });
-            return { message: "Delete pricing success", data: result, status_code: 200 };
+            return common_components_1.CommonComponents.throwResponse(result, "Delete pricing success", res);
         }
         catch (error) {
-            return { message: error?.message, status_code: error?.statusCode || 400 };
+            return common_components_1.CommonComponents.throwErrorResponse(error, res);
         }
     }
 };
@@ -77,24 +77,27 @@ __decorate([
     (0, common_1.Get)('/'),
     __param(0, (0, common_1.Query)()),
     __param(1, (0, common_1.Headers)('authorization')),
+    __param(2, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:paramtypes", [Object, String, Object]),
     __metadata("design:returntype", Promise)
 ], PricingController.prototype, "pricings", null);
 __decorate([
     (0, common_1.Get)('/:id'),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Headers)('authorization')),
+    __param(2, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:paramtypes", [String, String, Object]),
     __metadata("design:returntype", Promise)
 ], PricingController.prototype, "pricing", null);
 __decorate([
     (0, common_1.Post)('/'),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Headers)('authorization')),
+    __param(2, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:paramtypes", [Object, String, Object]),
     __metadata("design:returntype", Promise)
 ], PricingController.prototype, "createPricing", null);
 __decorate([
@@ -102,16 +105,18 @@ __decorate([
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __param(2, (0, common_1.Headers)('authorization')),
+    __param(3, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object, String]),
+    __metadata("design:paramtypes", [String, Object, String, Object]),
     __metadata("design:returntype", Promise)
 ], PricingController.prototype, "updatePricing", null);
 __decorate([
     (0, common_1.Delete)('/:id'),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Headers)('authorization')),
+    __param(2, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:paramtypes", [String, String, Object]),
     __metadata("design:returntype", Promise)
 ], PricingController.prototype, "deletePricing", null);
 exports.PricingController = PricingController = __decorate([

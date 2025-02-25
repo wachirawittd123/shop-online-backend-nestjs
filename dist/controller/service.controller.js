@@ -21,54 +21,54 @@ let ServiceCategoryController = class ServiceCategoryController {
     constructor(serviceCategoryService) {
         this.serviceCategoryService = serviceCategoryService;
     }
-    async services(args, authToken) {
+    async services(args, authToken, res) {
         try {
             await common_components_1.CommonComponents.verifyJWT({ token: authToken, roles: ["superadmin", "admin", "consumer"] });
             const result = await this.serviceCategoryService.getServices(args);
-            return { message: "Query services success", data: result, status_code: 200 };
+            return common_components_1.CommonComponents.throwResponse(result, "Query services success", res);
         }
         catch (error) {
-            return { message: error?.message, status_code: error?.statusCode || 400 };
+            return common_components_1.CommonComponents.throwErrorResponse(error, res);
         }
     }
-    async service(id, authToken) {
+    async service(id, authToken, res) {
         try {
             await common_components_1.CommonComponents.verifyJWT({ token: authToken, roles: ["superadmin", "admin", "consumer"] });
             const result = await this.serviceCategoryService.getService({ id });
-            return { message: "Query service success", data: result, status_code: 200 };
+            return common_components_1.CommonComponents.throwResponse(result, "Query service success", res);
         }
         catch (error) {
-            return { message: error?.message, status_code: error?.statusCode || 400 };
+            return common_components_1.CommonComponents.throwErrorResponse(error, res);
         }
     }
-    async createService(args, authToken) {
+    async createService(args, authToken, res) {
         try {
             const user = await common_components_1.CommonComponents.verifyJWT({ token: authToken, roles: ["superadmin", "admin"] });
             const result = await this.serviceCategoryService.createService(args, user);
-            return { message: "Create service success", data: result, status_code: 200 };
+            return common_components_1.CommonComponents.throwResponse(result, "Create service success", res);
         }
         catch (error) {
-            return { message: error?.message, status_code: error?.statusCode || 400 };
+            return common_components_1.CommonComponents.throwErrorResponse(error, res);
         }
     }
-    async updateService(id, args, authToken) {
+    async updateService(id, args, authToken, res) {
         try {
             const user = await common_components_1.CommonComponents.verifyJWT({ token: authToken, roles: ["superadmin", "admin"] });
             const result = await this.serviceCategoryService.updateService({ ...args, id: id }, user);
-            return { message: "Update service success", data: result, status_code: 200 };
+            return common_components_1.CommonComponents.throwResponse(result, "Update service success", res);
         }
         catch (error) {
-            return { message: error?.message, status_code: error?.statusCode || 400 };
+            return common_components_1.CommonComponents.throwErrorResponse(error, res);
         }
     }
-    async deleteService(id, authToken) {
+    async deleteService(id, authToken, res) {
         try {
             await common_components_1.CommonComponents.verifyJWT({ token: authToken, roles: ["superadmin", "admin"] });
             const result = await this.serviceCategoryService.deleteService({ id });
-            return { message: "Delete service success", data: result, status_code: 200 };
+            return common_components_1.CommonComponents.throwResponse(result, "Delete service success", res);
         }
         catch (error) {
-            return { message: error?.message, status_code: error?.statusCode || 400 };
+            return common_components_1.CommonComponents.throwErrorResponse(error, res);
         }
     }
 };
@@ -77,24 +77,27 @@ __decorate([
     (0, common_1.Get)('/'),
     __param(0, (0, common_1.Query)()),
     __param(1, (0, common_1.Headers)('authorization')),
+    __param(2, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:paramtypes", [Object, String, Object]),
     __metadata("design:returntype", Promise)
 ], ServiceCategoryController.prototype, "services", null);
 __decorate([
     (0, common_1.Get)('/:id'),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Headers)('authorization')),
+    __param(2, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:paramtypes", [String, String, Object]),
     __metadata("design:returntype", Promise)
 ], ServiceCategoryController.prototype, "service", null);
 __decorate([
     (0, common_1.Post)('/'),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Headers)('authorization')),
+    __param(2, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:paramtypes", [Object, String, Object]),
     __metadata("design:returntype", Promise)
 ], ServiceCategoryController.prototype, "createService", null);
 __decorate([
@@ -102,16 +105,18 @@ __decorate([
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __param(2, (0, common_1.Headers)('authorization')),
+    __param(3, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object, String]),
+    __metadata("design:paramtypes", [String, Object, String, Object]),
     __metadata("design:returntype", Promise)
 ], ServiceCategoryController.prototype, "updateService", null);
 __decorate([
     (0, common_1.Delete)('/:id'),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Headers)('authorization')),
+    __param(2, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:paramtypes", [String, String, Object]),
     __metadata("design:returntype", Promise)
 ], ServiceCategoryController.prototype, "deleteService", null);
 exports.ServiceCategoryController = ServiceCategoryController = __decorate([

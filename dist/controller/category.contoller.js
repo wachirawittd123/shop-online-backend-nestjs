@@ -21,44 +21,44 @@ let CategoryController = class CategoryController {
     constructor(categoryService) {
         this.categoryService = categoryService;
     }
-    async categories(args, authToken) {
+    async categories(args, authToken, res) {
         try {
             await common_components_1.CommonComponents.verifyJWT({ token: authToken, roles: ["superadmin", "admin", "consumer"] });
             const result = await this.categoryService.getCategories(args);
-            return { message: "Query categories success", data: result, status_code: 200 };
+            return common_components_1.CommonComponents.throwResponse(result, "Query categories success", res);
         }
         catch (error) {
-            return { message: error?.message, status_code: error?.statusCode || 400 };
+            return common_components_1.CommonComponents.throwErrorResponse(error, res);
         }
     }
-    async categorie(id, authToken) {
+    async categorie(id, authToken, res) {
         try {
             await common_components_1.CommonComponents.verifyJWT({ token: authToken, roles: ["superadmin", "admin", "consumer"] });
             const result = await this.categoryService.getCategory({ id });
-            return { message: "Query category success", data: result, status_code: 200 };
+            return common_components_1.CommonComponents.throwResponse(result, "Query category success", res);
         }
         catch (error) {
-            return { message: error?.message, status_code: error?.statusCode || 400 };
+            return common_components_1.CommonComponents.throwErrorResponse(error, res);
         }
     }
-    async createCategory(args, authToken) {
+    async createCategory(args, authToken, res) {
         try {
             const user = await common_components_1.CommonComponents.verifyJWT({ token: authToken, roles: ["superadmin", "admin", "consumer"] });
             const result = await this.categoryService.createCategory(args, user);
-            return { message: "Create category success", data: result, status_code: 200 };
+            return common_components_1.CommonComponents.throwResponse(result, "Create category success", res);
         }
         catch (error) {
-            return { message: error?.message, status_code: error?.statusCode || 400 };
+            return common_components_1.CommonComponents.throwErrorResponse(error, res);
         }
     }
-    async updateCategory(id, args, authToken) {
+    async updateCategory(id, args, authToken, res) {
         try {
             const user = await common_components_1.CommonComponents.verifyJWT({ token: authToken, roles: ["superadmin", "admin", "consumer"] });
             const result = await this.categoryService.updateCategory({ ...args, id: id }, user);
-            return { message: "Update category success", data: result, status_code: 200 };
+            return common_components_1.CommonComponents.throwResponse(result, "Update category success", res);
         }
         catch (error) {
-            return { message: error?.message, status_code: error?.statusCode || 400 };
+            return common_components_1.CommonComponents.throwErrorResponse(error, res);
         }
     }
 };
@@ -67,24 +67,27 @@ __decorate([
     (0, common_1.Get)('/'),
     __param(0, (0, common_1.Query)()),
     __param(1, (0, common_1.Headers)('authorization')),
+    __param(2, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:paramtypes", [Object, String, Object]),
     __metadata("design:returntype", Promise)
 ], CategoryController.prototype, "categories", null);
 __decorate([
     (0, common_1.Get)('/:id'),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Headers)('authorization')),
+    __param(2, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:paramtypes", [String, String, Object]),
     __metadata("design:returntype", Promise)
 ], CategoryController.prototype, "categorie", null);
 __decorate([
     (0, common_1.Post)('/'),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Headers)('authorization')),
+    __param(2, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:paramtypes", [Object, String, Object]),
     __metadata("design:returntype", Promise)
 ], CategoryController.prototype, "createCategory", null);
 __decorate([
@@ -92,8 +95,9 @@ __decorate([
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __param(2, (0, common_1.Headers)('authorization')),
+    __param(3, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object, String]),
+    __metadata("design:paramtypes", [String, Object, String, Object]),
     __metadata("design:returntype", Promise)
 ], CategoryController.prototype, "updateCategory", null);
 exports.CategoryController = CategoryController = __decorate([

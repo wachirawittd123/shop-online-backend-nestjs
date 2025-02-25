@@ -26,11 +26,6 @@ export interface ISendEmail {
     text?: string;
     html: string;
 }
-export interface IResultController {
-    message: string;
-    data?: any;
-    status_code: number;
-}
 export interface IVerifyJWT {
     token: string;
     roles?: string[];

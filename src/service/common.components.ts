@@ -6,6 +6,7 @@ import { IHashedPassword, IUser, IUserProfile, IVerifyJWT } from 'src/interface'
 import { SettingService } from 'src/common/setting';
 import * as moment from 'moment';
 import { PrismaClient } from '@prisma/client';
+import { Response } from 'express';
 
 const prisma = new PrismaClient();
 
@@ -23,12 +24,13 @@ export class CommonComponents {
         return await bcrypt.compare(password, hashedPassword)
     }
     static async verifyJWT({token, roles = ["consumer"]}: IVerifyJWT): Promise<object | string> {
-        if(!token) throw new CustomError("Token is required", 400)
-        const profile: IUserProfile | any = jwt.verify(String(token).replace("Bearer ", ""), SettingService.JWT_SECRET)
+        let newToken: string = String(token).replaceAll("Bearer ", "")
+        if(!newToken) throw new CustomError("Token is required", 400)
+        const profile: IUserProfile | any = jwt.verify(newToken, SettingService.JWT_SECRET)
         if(!profile) throw new CustomError("Invalid token", 400)
-        let user = await prisma.user.findFirst({where: {id: profile.id}})
+        let user: IUser | any = await prisma.user.findFirst({where: {id: profile.id}})
         if(!user) throw new CustomError("User not found", 400)
-        if(user.token !== token) throw new CustomError("Token is expired", 400)
+        if(user.token !== newToken) throw new CustomError("Token is expired", 400)
         if(roles && !roles.includes(user.role)) throw new CustomError("You are not authorized to access this resource", 400)
         return profile
     }
@@ -73,6 +75,13 @@ export class CommonComponents {
             console.error("Error generating refresh token:", error);
             throw new CustomError("Failed to generate refresh token", 400);
         }
+    }
+    static async throwErrorResponse(error: any, res: Response) {
+        let statusCode = error?.statusCode || 400
+        return res.status(statusCode).json({ message: error?.message, status_code: statusCode });
+    }
+    static async throwResponse(data: any, message: string, res: Response) {
+        return res.status(200).json({ message: message, data: data, status_code: 200 });
     }
 }
 

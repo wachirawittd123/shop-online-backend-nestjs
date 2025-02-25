@@ -31,12 +31,6 @@ export interface ISendEmail {
     html: string
 }
 
-export interface IResultController {
-    message: string
-    data?: any
-    status_code: number
-}
-
 export interface IVerifyJWT {
     token: string
     roles?: string[]

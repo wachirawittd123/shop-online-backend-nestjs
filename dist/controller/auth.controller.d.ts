@@ -1,8 +1,8 @@
 import { AuthService } from '../service/auth/auth.service';
-import { IResultController } from 'src/interface';
+import { Response } from 'express';
 export declare class AuthController {
     private authService;
     constructor(authService: AuthService);
-    login(req: any): Promise<IResultController>;
-    logout(authToken: string): Promise<IResultController>;
+    login(req: any, res: Response): Promise<Response>;
+    logout(authToken: string, res: Response): Promise<Response>;
 }

@@ -1,8 +1,9 @@
-import { Controller, Post, UseGuards, Request, Headers } from '@nestjs/common';
+import { Controller, Post, UseGuards, Request, Headers, Res } from '@nestjs/common';
 import { AuthService } from '../service/auth/auth.service';
 import { LocalAuthGuard } from '../service/auth/guard/local-auth';
-import { IResultController, IUserProfile } from 'src/interface';
+import { IUserProfile } from 'src/interface';
 import { CommonComponents } from 'src/service/common.components';
+import { Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -10,23 +11,22 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('/login')
-  async login(@Request() req): Promise<IResultController> {
+  async login(@Request() req, @Res() res: Response): Promise<Response> {
     try { 
-        console.log("user=========>",req.user)
         const result = await this.authService.login(req.user);
-        return { message: "Login success", data: result, status_code: 200 };
+        return CommonComponents.throwResponse(result, "Login success", res)
     } catch (error) {
-        return { message: error?.message, status_code: error?.statusCode || 400 };
+        return CommonComponents.throwErrorResponse(error, res)
     }
   }
   @Post('/logout')
-  async logout(@Headers('authorization') authToken: string): Promise<IResultController> {
+  async logout(@Headers('authorization') authToken: string, @Res() res: Response): Promise<Response> {
     try { 
         const user: IUserProfile | any = await CommonComponents.verifyJWT({token: authToken, roles: ["superadmin", "admin", "consumer"]})
         await this.authService.logout(user);
-        return { message: "Logout success", data: {}, status_code: 200 };
+        return CommonComponents.throwResponse({}, "Logout success", res)
     } catch (error) {
-        return { message: error?.message, status_code: error?.statusCode || 400 };
+        return CommonComponents.throwErrorResponse(error, res)
     }
   }
 

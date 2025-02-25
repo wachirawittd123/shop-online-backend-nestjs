@@ -16,12 +16,14 @@ export class AuthService {
     return user;
   }
 
-  async login(user: any) {
+  async login(user: any): Promise<IUserProfile | any> {
     const profile: IUserProfile | any = await UserComponents.getProfile(this.prisma, { email: user.email })
+    let token = await CommonComponents.signToken(profile)
+    let rtoken = await CommonComponents.refreshToken({...profile, password: user.password})
     return { 
         ...profile,
-        token: await CommonComponents.signToken(profile),
-        rtoken: await CommonComponents.refreshToken({...profile, password: user.password}),
+        token: token,
+        rtoken: rtoken,
      };
   }
 
