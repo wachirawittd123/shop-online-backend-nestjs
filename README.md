@@ -69,9 +69,8 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
-
+## Setting env.development
 ```bash
-env.development
 APP_NAME="Shop Online Backend Nest JS"
 APP_DESCRIPTION="Shop Online Backend Nest JS"
 APP_LOGO="LOGO"
